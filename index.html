@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Подключение Bootstrap чтобы все выглядело красиво -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Orbitron&display=swap" rel="stylesheet">
+    <title>My small chat</title>
+    <!-- Свои стили -->
+    <style>
+        body {
+            background: black;
+            color: #00ff00;
+            font-family: 'Orbitron', sans-serif;
+        }
+        input, textarea{
+            background-color: transparent !important;
+            color: #00ff00 !important;
+            border-radius: 0px !important;
+            border: none !important;
+            font-family: 'Orbitron', sans-serif !important;
+        }
+
+        .button{
+            width: 100%;
+            padding: .5%;
+            font-size: 1rem;
+            text-transform: uppercase;
+            margin-top: .5%;
+            border: none !important;
+            font-family: 'Orbitron', sans-serif !important;
+        }
+        textarea{
+            margin-top: .5%;
+            height: 120px !important;
+        }
+        #all-mess{
+            word-wrap: break-word;
+            height: 600px !important;
+            font-family: 'Orbitron', sans-serif !important;
+        }
+        .rofl{
+            height: 75vh;
+        }
+        #messForm{
+            font-family: 'Orbitron', sans-serif !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 rofl">
+            <div id="all_mess"></div>
+        </div>
+<!--        <div class="col-3">-->
+<!--            <div class="users-connected"></div>-->
+<!--        </div>-->
+        <div class="col-12">
+            <form id="messForm">
+                <input type="text" name="name" id="name" placeholder="Nickname" class="form-control">
+                <textarea name="message" id="message" class="form-control" placeholder="Your message"></textarea>
+                <input type="submit" value="Send" class="button">
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+
+    $(function() {
+        var socket = io.connect();
+        var $form = $("#messForm");
+        var $name = $("#name");
+        var $textarea = $("#message");
+        var $all_messages = $("#all_mess");
+        var $user = $(".users-connected");
+
+        $form.submit(function(event) {
+            event.preventDefault();
+            socket.emit('send mess', {mess: $textarea.val(), name: $name.val()});
+            $textarea.val('');
+        });
+
+        socket.on('add mess', function(data) {
+            if(data.mess == ''){
+                return false
+            }else {
+                $all_messages.append("<div class='message-text'><b>" + data.name + "</b>: " + data.mess + "</div>");
+                $user.append("<div class='user'><b>" + data.name + "</b>")
+            }
+        });
+    });
+</script>
+</body>
+</html>

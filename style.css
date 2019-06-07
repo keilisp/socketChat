@@ -1,0 +1,18 @@
+body{
+    background-color: #000;
+    color: red;
+}
+.messages{
+    height: 700px;
+}
+.messages__item{
+    border: 2px solid lawngreen;
+    text-align: center;
+    height: 700px;
+}
+#all-mess{
+    height: 700px;
+}
+textarea{
+    background-color: red !important;
+}
